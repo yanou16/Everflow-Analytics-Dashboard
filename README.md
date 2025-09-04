@@ -2,7 +2,10 @@
 
 Application web permettant de **visualiser les performances (profits)** par offre, affilié ou annonceur sur une période donnée, en utilisant l’API **Everflow**.  
 
-![Dashboard Preview](./screenshot.png)  
+![Dashboard Preview]
+<img width="1901" height="836" alt="image" src="https://github.com/user-attachments/assets/d00f11a9-7cb2-4230-9fdc-e06c5844b546" />
+<img width="1559" height="811" alt="image" src="https://github.com/user-attachments/assets/5c7e9b55-cf24-468f-97ce-dd63d6ee79cb" />
+
 
 ---
 
