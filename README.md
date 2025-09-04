@@ -4,6 +4,8 @@ Application web permettant de **visualiser les performances (profits)** par offr
 
 ![Dashboard Preview]
 <img width="1901" height="836" alt="image" src="https://github.com/user-attachments/assets/d00f11a9-7cb2-4230-9fdc-e06c5844b546" />
+<img width="1836" height="821" alt="image" src="https://github.com/user-attachments/assets/0ea9c2f9-c907-491e-9781-f149ccd7a253" />
+
 <img width="1559" height="811" alt="image" src="https://github.com/user-attachments/assets/5c7e9b55-cf24-468f-97ce-dd63d6ee79cb" />
 
 
