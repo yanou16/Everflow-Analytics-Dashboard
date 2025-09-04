@@ -46,54 +46,6 @@ const ProfitChart = ({ data, title, entityType, chartType = 'bar' }) => {
     }
   };
 
-  // Préparer les données pour le graphique
-  const chartData = {
-    labels: data.map(item => {
-      // Tronquer les noms trop longs pour améliorer la lisibilité
-      const name = item[getNameProperty()] || `ID: ${item[getIdProperty()]}`;
-      return name.length > 25 ? name.substring(0, 22) + '...' : name;
-    }),
-    datasets: [
-      {
-        label: 'Revenue',
-        data: data.map(item => item.revenue),
-        backgroundColor: 'rgba(54, 162, 235, 0.6)',
-      },
-      {
-        label: 'Payout',
-        data: data.map(item => item.payout),
-        backgroundColor: 'rgba(255, 99, 132, 0.6)',
-      },
-      {
-        label: 'Profit',
-        data: data.map(item => item.profit),
-        backgroundColor: 'rgba(75, 192, 192, 0.6)',
-      },
-    ],
-  };
-
-  // Pour les graphiques empilés, on utilise un format différent
-  const stackedChartData = {
-    labels: data.map(item => {
-      const name = item[getNameProperty()] || `ID: ${item[getIdProperty()]}`;
-      return name.length > 25 ? name.substring(0, 22) + '...' : name;
-    }),
-    datasets: [
-      {
-        label: 'Revenue',
-        data: data.map(item => item.revenue),
-        backgroundColor: 'rgba(54, 162, 235, 0.8)',
-      },
-      {
-        label: 'Payout',
-        data: data.map(item => item.payout),
-        backgroundColor: 'rgba(255, 99, 132, 0.8)',
-      }
-    ],
-  };
-
-  // Ajoutez ces options dans votre composant ProfitChart
-  
   // Couleurs personnalisées pour les graphiques
   const chartColors = {
     profit: 'rgba(56, 161, 105, 0.8)',    // Vert
@@ -112,6 +64,76 @@ const ProfitChart = ({ data, title, entityType, chartType = 'bar' }) => {
       'rgba(72, 187, 120, 0.8)',
     ],
   };
+
+  // Préparer les données pour le graphique
+  const chartData = {
+    labels: data.map(item => {
+      // Tronquer les noms trop longs pour améliorer la lisibilité
+      const name = item[getNameProperty()] || `ID: ${item[getIdProperty()]}`;
+      return name.length > 25 ? name.substring(0, 22) + '...' : name;
+    }),
+    datasets: [
+      {
+        label: 'Revenue',
+        data: data.map(item => item.revenue),
+        backgroundColor: chartColors.revenue,
+      },
+      {
+        label: 'Payout',
+        data: data.map(item => item.payout),
+        backgroundColor: chartColors.payout,
+      },
+      {
+        label: 'Profit',
+        data: data.map(item => item.profit),
+        backgroundColor: chartColors.profit,
+      },
+    ],
+  };
+
+  // Préparer les données pour le graphique de profit uniquement
+  const profitOnlyChartData = {
+    labels: data.map(item => {
+      // Tronquer les noms trop longs pour améliorer la lisibilité
+      const name = item[getNameProperty()] || `ID: ${item[getIdProperty()]}`;  
+      return name.length > 25 ? name.substring(0, 22) + '...' : name;
+    }),
+    datasets: [
+      {
+        label: 'Profit',
+        data: data.map(item => item.profit),
+        backgroundColor: chartColors.profit,
+      },
+    ],
+  };
+
+  // Pour les graphiques empilés, on utilise un format différent
+  const stackedChartData = {
+    labels: data.map(item => {
+      const name = item[getNameProperty()] || `ID: ${item[getIdProperty()]}`;  
+      return name.length > 25 ? name.substring(0, 22) + '...' : name;
+    }),
+    datasets: [
+      {
+        label: 'Revenue',
+        data: data.map(item => item.revenue),
+        backgroundColor: chartColors.revenue,
+      },
+      {
+        label: 'Payout',
+        data: data.map(item => item.payout),
+        backgroundColor: chartColors.payout,
+      }
+    ],
+  };
+
+  // Ajoutez ces options dans votre composant ProfitChart
+  
+  // Supprimer cette seconde déclaration de chartColors
+  // const chartColors = { ... };
+  // Couleurs personnalisées pour les graphiques
+  // eslint-disable-next-line no-unused-vars
+  
   
   // Améliorez les options des graphiques
   const options = {
@@ -162,15 +184,30 @@ const ProfitChart = ({ data, title, entityType, chartType = 'bar' }) => {
         displayColors: true,
         usePointStyle: true,
         callbacks: {
+          // Remplacer le callback label par un callback plus complet
+          title: function(tooltipItems) {
+            if (tooltipItems.length > 0) {
+              const index = tooltipItems[0].dataIndex;
+              const item = data[index];
+              const name = item[getNameProperty()] || `ID: ${item[getIdProperty()]}`;
+              return name;
+            }
+            return '';
+          },
           label: function(context) {
-            let label = context.dataset.label || '';
-            if (label) {
-              label += ': ';
-            }
-            if (context.parsed.y !== null) {
-              label += new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'USD' }).format(context.parsed.y);
-            }
-            return label;
+            // Ne rien afficher ici car on va tout afficher dans afterLabel
+            return '';
+          },
+          afterLabel: function(context) {
+            const index = context.dataIndex;
+            const item = data[index];
+            
+            // Toujours afficher toutes les valeurs
+            return [
+              'Revenue: ' + new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'USD' }).format(item.revenue),
+              'Payout: ' + new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'USD' }).format(item.payout),
+              'Profit: ' + new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'USD' }).format(item.profit)
+            ];
           }
         }
       }
@@ -193,7 +230,9 @@ const ProfitChart = ({ data, title, entityType, chartType = 'bar' }) => {
               notation: 'compact' 
             }).format(value);
           }
-        }
+        },
+        // Option pour l'échelle logarithmique si nécessaire
+        type: chartType === 'stacked' && title.includes('Revenue') ? 'logarithmic' : 'linear'
       },
       x: {
         grid: {
@@ -243,7 +282,8 @@ const ProfitChart = ({ data, title, entityType, chartType = 'bar' }) => {
         return <Bar data={stackedChartData} options={{...options, ...barOptions}} />;
       case 'bar':
       default:
-        return <Bar data={chartData} options={{...options, ...barOptions}} />;
+        // Utiliser profitOnlyChartData pour le graphique de profit uniquement
+        return <Bar data={profitOnlyChartData} options={{...options, ...barOptions}} />;
     }
   };
   

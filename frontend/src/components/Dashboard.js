@@ -43,6 +43,7 @@ const Dashboard = () => {
   };
   
   // Charger les données au montage du composant
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     loadData();
   }, []);
@@ -159,7 +160,7 @@ const Dashboard = () => {
                           data={[...affiliatesData]
                             .sort((a, b) => b.profit - a.profit)
                             .slice(0, 10)} 
-                          title="Top 10 Profits par Affilié ($)" 
+                          title="Top 10 Profits par Affilié" 
                           entityType="affiliate" 
                           chartType="bar" 
                         />
@@ -169,7 +170,7 @@ const Dashboard = () => {
                           data={[...affiliatesData]
                             .sort((a, b) => b.profit - a.profit)
                             .slice(0, 10)} 
-                          title="Top 10 Revenue et Payout par Affilié ($)" 
+                          title="Revenue vs Payout par Affilié" 
                           entityType="affiliate" 
                           chartType="stacked" 
                         />
