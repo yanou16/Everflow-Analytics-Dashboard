@@ -92,27 +92,122 @@ const ProfitChart = ({ data, title, entityType, chartType = 'bar' }) => {
     ],
   };
 
+  // Ajoutez ces options dans votre composant ProfitChart
+  
+  // Couleurs personnalisées pour les graphiques
+  const chartColors = {
+    profit: 'rgba(56, 161, 105, 0.8)',    // Vert
+    revenue: 'rgba(49, 130, 206, 0.8)',     // Bleu
+    payout: 'rgba(229, 62, 62, 0.8)',       // Rouge
+    background: [
+      'rgba(56, 161, 105, 0.8)',
+      'rgba(49, 130, 206, 0.8)',
+      'rgba(221, 107, 32, 0.8)',
+      'rgba(136, 87, 241, 0.8)',
+      'rgba(237, 137, 54, 0.8)',
+      'rgba(72, 187, 120, 0.8)',
+      'rgba(66, 153, 225, 0.8)',
+      'rgba(159, 122, 234, 0.8)',
+      'rgba(246, 173, 85, 0.8)',
+      'rgba(72, 187, 120, 0.8)',
+    ],
+  };
+  
+  // Améliorez les options des graphiques
   const options = {
     responsive: true,
     maintainAspectRatio: false,
+    animation: {
+      duration: 1000,  // Animation plus longue pour un effet plus fluide
+      easing: 'easeOutQuart'
+    },
     plugins: {
       legend: {
         position: 'top',
+        labels: {
+          padding: 20,
+          font: {
+            family: '"Poppins", sans-serif',
+            size: 12
+          },
+          usePointStyle: true,  // Utilise des points au lieu de rectangles
+          pointStyle: 'circle'
+        }
       },
       title: {
         display: true,
         text: title,
+        font: {
+          family: '"Poppins", sans-serif',
+          size: 16,
+          weight: 'bold'
+        },
+        padding: {
+          top: 10,
+          bottom: 20
+        }
       },
+      tooltip: {
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        titleFont: {
+          family: '"Poppins", sans-serif',
+          size: 14
+        },
+        bodyFont: {
+          family: '"Poppins", sans-serif',
+          size: 13
+        },
+        padding: 12,
+        cornerRadius: 6,
+        displayColors: true,
+        usePointStyle: true,
+        callbacks: {
+          label: function(context) {
+            let label = context.dataset.label || '';
+            if (label) {
+              label += ': ';
+            }
+            if (context.parsed.y !== null) {
+              label += new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'USD' }).format(context.parsed.y);
+            }
+            return label;
+          }
+        }
+      }
     },
     scales: {
       y: {
         beginAtZero: true,
+        grid: {
+          color: 'rgba(0, 0, 0, 0.05)',
+          drawBorder: false,
+        },
+        ticks: {
+          font: {
+            family: '"Poppins", sans-serif',
+          },
+          callback: function(value) {
+            return new Intl.NumberFormat('fr-FR', { 
+              style: 'currency', 
+              currency: 'USD',
+              notation: 'compact' 
+            }).format(value);
+          }
+        }
       },
+      x: {
+        grid: {
+          display: false,
+        },
+        ticks: {
+          font: {
+            family: '"Poppins", sans-serif',
+          }
+        }
+      }
     },
-    barPercentage: 0.7, // Réduit la largeur des barres
-    categoryPercentage: 0.8, // Augmente l'espace entre les groupes de barres
   };
-
+  
   // Configuration spécifique pour le graphique en ligne
   const lineOptions = {
     fill: true, // Pour créer l'effet de zone
